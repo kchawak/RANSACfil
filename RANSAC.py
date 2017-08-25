@@ -47,11 +47,24 @@ extracted_inliers = cloud_filtered.extract(inliers, negative=False)
 filename = 'extracted_inliers.pcd'
 pcl.save(extracted_inliers, filename)
 
-# Save pcd for table
-# pcl.save(cloud, filename)
-
 
 # Extract outliers
+extracted_outliers = cloud_filtered.extract(inliers, negative=True)
+filename = 'extracted_outliers.pcd'
+pcl.save(extracted_outliers, filename)
+# Create the outlier filter
+outlier_filter = cloud_filtered.make_statistical_outlier_filter()
+# Set the number of neighboring points
+outlier_filter.set_mean_k(50)
+# Set threshold scale factor
+x = 1.0
+# Point with mean distance larger than global is outlier
+outlier_filter.set_std_dev_mul_thresh(x)
+# Calling filter
+cloud_filtered = outlier_filter.filter()
 
 
 # Save pcd for tabletop objects
+filename = 'filtered_outliers.pcd'
+pcl.save(cloud_filtered, filename)
+
