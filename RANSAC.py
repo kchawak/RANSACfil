@@ -30,9 +30,22 @@ pcl.save(cloud_filtered, filename)
 
 
 # RANSAC plane segmentation
+# Creating object
+seg = cloud_filtered.make_segmenter()
+# Setting model
+seg.set_model_type(pcl.SACMODEL_PLANE)
+seg.set_method_type(pcl.SAC_RANSAC)
+# Setting max_distance for segmenting the table
+max_distance = 0.01
+seg.set_distance_threshold(max_distance)
+# Call segment function to obtain inlier indices and model coefficients
+inliers, coefficients = seg.segment()
 
 
 # Extract inliers
+extracted_inliers = cloud_filtered.extract(inliers, negative=False)
+filename = 'extracted_inliers.pcd'
+pcl.save(extracted_inliers, filename)
 
 # Save pcd for table
 # pcl.save(cloud, filename)
